@@ -11,15 +11,20 @@ export default function TaskCard({ task, onPress }) {
         </Text>
 
         <Text style={styles.text}>Project: {task.project}</Text>
+
         <Text style={styles.text}>Assignee: {task.assignee}</Text>
+
         <Text style={styles.text}>Deadline: {task.deadline}</Text>
 
         <Chip style={styles.chip}>{task.status}</Chip>
-        <Chip style={styles.chip}>Priority: {task.priority}</Chip>
+
+        <Chip style={styles.priorityChip}>{task.priority}</Chip>
       </Card.Content>
 
       <Card.Actions>
-        <Button onPress={onPress}>View Detail</Button>
+        <Button mode="contained" onPress={onPress}>
+          View Detail
+        </Button>
       </Card.Actions>
     </Card>
   );
@@ -27,17 +32,26 @@ export default function TaskCard({ task, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: 14,
-    borderRadius: 16,
+    marginBottom: 16,
+    borderRadius: 22,
+    elevation: 3,
   },
+
   title: {
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 10,
   },
+
   text: {
     marginTop: 4,
   },
+
   chip: {
+    marginTop: 12,
+    alignSelf: "flex-start",
+  },
+
+  priorityChip: {
     marginTop: 10,
     alignSelf: "flex-start",
   },

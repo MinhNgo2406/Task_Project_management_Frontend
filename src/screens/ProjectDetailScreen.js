@@ -52,7 +52,7 @@ export default function ProjectDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "transparent",
   },
   card: {
     borderRadius: 16,

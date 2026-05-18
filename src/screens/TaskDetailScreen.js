@@ -156,7 +156,7 @@ export default function TaskDetailScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "transparent",
   },
   card: {
     borderRadius: 16,

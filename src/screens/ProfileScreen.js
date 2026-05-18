@@ -8,11 +8,15 @@ import {
   Button,
   Divider,
   Chip,
+  Switch,
 } from "react-native-paper";
 
+import { ThemeContext } from "../../App";
 import { user, projects, tasks, notifications } from "../data/mockData";
 
 export default function ProfileScreen() {
+  const { isDarkMode, setIsDarkMode } = React.useContext(ThemeContext);
+
   const completedTasks = tasks.filter((task) => task.status === "Done").length;
 
   const pendingTasks = tasks.filter((task) => task.status !== "Done").length;
@@ -21,7 +25,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Avatar + User Info */}
+      {/* PROFILE */}
       <Card style={styles.profileCard}>
         <Card.Content>
           <Avatar.Text size={90} label="NM" style={styles.avatar} />
@@ -38,7 +42,7 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
-      {/* Statistics */}
+      {/* STATISTICS */}
       <Text variant="titleLarge" style={styles.sectionTitle}>
         Statistics
       </Text>
@@ -89,7 +93,7 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
-      {/* Workspace Info */}
+      {/* WORKSPACE */}
       <Text variant="titleLarge" style={styles.sectionTitle}>
         Workspace
       </Text>
@@ -130,13 +134,31 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
-      {/* Settings */}
+      {/* SETTINGS */}
       <Text variant="titleLarge" style={styles.sectionTitle}>
         Settings
       </Text>
 
       <Card style={styles.card}>
         <Card.Content>
+          {/* DARK MODE */}
+          <List.Item
+            title="Dark Mode"
+            description={
+              isDarkMode ? "Dark theme enabled" : "Light theme enabled"
+            }
+            left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
+            right={() => (
+              <Switch
+                value={isDarkMode}
+                onValueChange={() => setIsDarkMode(!isDarkMode)}
+              />
+            )}
+          />
+
+          <Divider />
+
+          {/* EDIT PROFILE */}
           <List.Item
             title="Edit Profile"
             description="Update user information"
@@ -147,6 +169,7 @@ export default function ProfileScreen() {
 
           <Divider />
 
+          {/* CHANGE PASSWORD */}
           <List.Item
             title="Change Password"
             description="Update account password"
@@ -155,6 +178,7 @@ export default function ProfileScreen() {
 
           <Divider />
 
+          {/* NOTIFICATION SETTINGS */}
           <List.Item
             title="Notification Settings"
             description="Manage notification preferences"
@@ -163,7 +187,7 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
-      {/* Logout */}
+      {/* LOGOUT */}
       <Button
         mode="contained"
         icon="logout"
@@ -179,20 +203,20 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
     padding: 16,
   },
 
   profileCard: {
     borderRadius: 20,
     marginBottom: 20,
+    elevation: 3,
   },
 
   avatar: {
     alignSelf: "center",
     marginTop: 10,
     marginBottom: 16,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#5B8DEF",
   },
 
   name: {
@@ -220,6 +244,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 18,
     marginBottom: 20,
+    elevation: 3,
   },
 
   logoutButton: {

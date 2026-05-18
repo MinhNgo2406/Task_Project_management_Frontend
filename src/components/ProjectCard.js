@@ -6,25 +6,30 @@ export default function ProjectCard({ project, onPress }) {
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Text variant="titleMedium" style={styles.title}>
+        <Text variant="titleLarge" style={styles.title}>
           {project.name}
         </Text>
 
-        <Text variant="bodyMedium" style={styles.description}>
-          {project.description}
-        </Text>
+        <Text style={styles.description}>{project.description}</Text>
 
         <Chip style={styles.chip}>{project.status}</Chip>
 
-        <Text style={styles.progressText}>Progress: {project.progress}%</Text>
-        <ProgressBar progress={project.progress / 100} />
+        <Text style={styles.progressText}>Progress {project.progress}%</Text>
+
+        <ProgressBar
+          progress={project.progress / 100}
+          style={styles.progressBar}
+        />
 
         <Text style={styles.info}>Members: {project.members}</Text>
+
         <Text style={styles.info}>Deadline: {project.deadline}</Text>
       </Card.Content>
 
       <Card.Actions>
-        <Button onPress={onPress}>View Detail</Button>
+        <Button mode="contained" onPress={onPress}>
+          View Detail
+        </Button>
       </Card.Actions>
     </Card>
   );
@@ -32,24 +37,37 @@ export default function ProjectCard({ project, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: 14,
-    borderRadius: 16,
+    marginBottom: 16,
+    borderRadius: 22,
+    elevation: 3,
   },
+
   title: {
     fontWeight: "bold",
   },
+
   description: {
-    marginVertical: 8,
+    marginTop: 10,
+    marginBottom: 12,
     color: "#64748B",
   },
+
   chip: {
     alignSelf: "flex-start",
-    marginBottom: 10,
+    marginBottom: 12,
   },
+
   progressText: {
     marginBottom: 6,
+    fontWeight: "600",
   },
+
+  progressBar: {
+    height: 10,
+    borderRadius: 20,
+  },
+
   info: {
-    marginTop: 8,
+    marginTop: 10,
   },
 });

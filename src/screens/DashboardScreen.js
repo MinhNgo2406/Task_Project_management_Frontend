@@ -78,29 +78,37 @@ export default function DashboardScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
-    backgroundColor: "#F8FAFC",
   },
+
   title: {
     fontWeight: "bold",
+    marginBottom: 4,
   },
+
   subtitle: {
+    marginBottom: 20,
     color: "#64748B",
-    marginTop: 4,
-    marginBottom: 16,
   },
+
   statsRow: {
     flexDirection: "row",
+    justifyContent: "space-between",
   },
+
   sectionTitle: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 24,
+    marginBottom: 12,
     fontWeight: "bold",
   },
+
   card: {
-    marginBottom: 30,
-    borderRadius: 16,
+    borderRadius: 20,
+    marginBottom: 18,
+    elevation: 3,
   },
+
   text: {
     marginTop: 6,
   },
