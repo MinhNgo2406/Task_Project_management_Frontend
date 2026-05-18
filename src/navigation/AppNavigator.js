@@ -2,6 +2,10 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import BottomTabs from "./BottomTabs";
+
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
+
 import ProjectDetailScreen from "../screens/ProjectDetailScreen";
 import TaskDetailScreen from "../screens/TaskDetailScreen";
 import CreateProjectScreen from "../screens/CreateProjectScreen";
@@ -12,11 +16,29 @@ const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="MainTabs">
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+
       <Stack.Screen
         name="MainTabs"
         component={BottomTabs}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+        }}
       />
 
       <Stack.Screen
