@@ -1,201 +1,306 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
 import {
-  Avatar,
-  Text,
-  Card,
-  List,
-  Button,
-  Divider,
-  Chip,
-  Switch,
-} from "react-native-paper";
+  ScrollView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { Avatar, Text, Switch } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { ThemeContext } from "../../App";
 import { user, projects, tasks, notifications } from "../data/mockData";
 
-export default function ProfileScreen() {
-  const { isDarkMode, setIsDarkMode } = React.useContext(ThemeContext);
+function StatBox({ icon, label, value, color, colors, isDarkMode }) {
+  return (
+    <LinearGradient colors={colors} style={styles.statBox}>
+      <MaterialCommunityIcons name={icon} size={28} color={color} />
+      <Text
+        style={[
+          styles.statValue,
+          { color: isDarkMode ? "#F8FAFC" : "#0F172A" },
+        ]}
+      >
+        {value}
+      </Text>
+      <Text
+        style={[
+          styles.statLabel,
+          { color: isDarkMode ? "#CBD5E1" : "#64748B" },
+        ]}
+      >
+        {label}
+      </Text>
+    </LinearGradient>
+  );
+}
 
-  const completedTasks = tasks.filter((task) => task.status === "Done").length;
-
-  const pendingTasks = tasks.filter((task) => task.status !== "Done").length;
-
-  const unreadNotifications = notifications.filter((item) => !item.read).length;
+function SettingItem({
+  icon,
+  title,
+  subtitle,
+  color,
+  right,
+  onPress,
+  isDarkMode,
+}) {
+  const itemColors = isDarkMode
+    ? ["#1E293B", "#0F172A"]
+    : ["#FFFFFF", "#F8FAFC"];
 
   return (
-    <ScrollView style={styles.container}>
-      {/* PROFILE */}
-      <Card style={styles.profileCard}>
-        <Card.Content>
-          <Avatar.Text size={90} label="NM" style={styles.avatar} />
+    <TouchableOpacity activeOpacity={0.85} onPress={onPress}>
+      <LinearGradient colors={itemColors} style={styles.settingItem}>
+        <View style={[styles.settingIcon, { backgroundColor: `${color}20` }]}>
+          <MaterialCommunityIcons name={icon} size={26} color={color} />
+        </View>
 
-          <Text variant="headlineSmall" style={styles.name}>
-            {user.name}
+        <View style={styles.settingTextBox}>
+          <Text
+            style={[
+              styles.settingTitle,
+              { color: isDarkMode ? "#F8FAFC" : "#0F172A" },
+            ]}
+          >
+            {title}
           </Text>
 
-          <Text style={styles.email}>{user.email}</Text>
+          {subtitle ? (
+            <Text
+              style={[
+                styles.settingSubtitle,
+                { color: isDarkMode ? "#CBD5E1" : "#64748B" },
+              ]}
+            >
+              {subtitle}
+            </Text>
+          ) : null}
+        </View>
 
-          <Chip icon="shield-account" style={styles.roleChip}>
+        {right ? (
+          right
+        ) : (
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={26}
+            color={isDarkMode ? "#CBD5E1" : "#94A3B8"}
+          />
+        )}
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+}
+
+export default function ProfileScreen() {
+  const { isDarkMode, setIsDarkMode, colors } = React.useContext(ThemeContext);
+
+  const completedTasks = tasks.filter((task) => task.status === "Done").length;
+  const pendingTasks = tasks.filter((task) => task.status !== "Done").length;
+  const unreadNotifications = notifications.filter((item) => !item.read).length;
+
+  const profileColors = isDarkMode
+    ? ["#1E293B", "#0F172A", "#111827"]
+    : ["#EEF2FF", "#F5F3FF", "#F8FAFC"];
+
+  return (
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
+      <LinearGradient
+        colors={profileColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[
+          styles.profileCard,
+          { borderColor: isDarkMode ? "#334155" : "rgba(255,255,255,0.9)" },
+        ]}
+      >
+        <View
+          style={[
+            styles.profileCircleOne,
+            {
+              backgroundColor: isDarkMode
+                ? "rgba(192,132,252,0.16)"
+                : "rgba(124,58,237,0.12)",
+            },
+          ]}
+        />
+        <View
+          style={[
+            styles.profileCircleTwo,
+            {
+              backgroundColor: isDarkMode
+                ? "rgba(139,158,255,0.14)"
+                : "rgba(37,99,235,0.10)",
+            },
+          ]}
+        />
+
+        <Avatar.Text
+          size={92}
+          label="NM"
+          style={styles.avatar}
+          labelStyle={styles.avatarLabel}
+        />
+
+        <Text style={[styles.name, { color: colors.text }]}>{user.name}</Text>
+        <Text style={[styles.email, { color: colors.subText }]}>
+          {user.email}
+        </Text>
+
+        <View
+          style={[
+            styles.roleChip,
+            {
+              backgroundColor: isDarkMode
+                ? "rgba(192,132,252,0.18)"
+                : "rgba(124,58,237,0.14)",
+            },
+          ]}
+        >
+          <MaterialCommunityIcons
+            name="shield-account"
+            size={18}
+            color={isDarkMode ? "#C084FC" : "#7C3AED"}
+          />
+          <Text
+            style={[
+              styles.roleText,
+              { color: isDarkMode ? "#C084FC" : "#6D28D9" },
+            ]}
+          >
             {user.role}
-          </Chip>
-        </Card.Content>
-      </Card>
+          </Text>
+        </View>
+      </LinearGradient>
 
-      {/* STATISTICS */}
-      <Text variant="titleLarge" style={styles.sectionTitle}>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>
         Statistics
       </Text>
 
-      <Card style={styles.card}>
-        <Card.Content>
-          <List.Item
-            title="Total Projects"
-            description={`${projects.length} projects`}
-            left={(props) => <List.Icon {...props} icon="folder-multiple" />}
-          />
+      <View style={styles.statRow}>
+        <StatBox
+          icon="folder-multiple"
+          label="Projects"
+          value={projects.length}
+          color={isDarkMode ? "#8B9EFF" : "#2563EB"}
+          colors={isDarkMode ? ["#1E293B", "#172554"] : ["#EFF6FF", "#DBEAFE"]}
+          isDarkMode={isDarkMode}
+        />
 
-          <Divider />
+        <StatBox
+          icon="check-circle"
+          label="Done"
+          value={completedTasks}
+          color="#22C55E"
+          colors={isDarkMode ? ["#1E293B", "#14532D"] : ["#F0FDF4", "#DCFCE7"]}
+          isDarkMode={isDarkMode}
+        />
+      </View>
 
-          <List.Item
-            title="Total Tasks"
-            description={`${tasks.length} tasks`}
-            left={(props) => (
-              <List.Icon {...props} icon="checkbox-marked-circle-outline" />
-            )}
-          />
+      <View style={styles.statRow}>
+        <StatBox
+          icon="timer-sand"
+          label="Pending"
+          value={pendingTasks}
+          color="#F97316"
+          colors={isDarkMode ? ["#1E293B", "#431407"] : ["#FFF7ED", "#FFEDD5"]}
+          isDarkMode={isDarkMode}
+        />
 
-          <Divider />
+        <StatBox
+          icon="bell-ring"
+          label="Unread"
+          value={unreadNotifications}
+          color="#0EA5A8"
+          colors={isDarkMode ? ["#1E293B", "#164E63"] : ["#ECFEFF", "#CFFAFE"]}
+          isDarkMode={isDarkMode}
+        />
+      </View>
 
-          <List.Item
-            title="Completed Tasks"
-            description={`${completedTasks} completed`}
-            left={(props) => (
-              <List.Icon {...props} icon="check-circle-outline" />
-            )}
-          />
-
-          <Divider />
-
-          <List.Item
-            title="Pending Tasks"
-            description={`${pendingTasks} pending`}
-            left={(props) => <List.Icon {...props} icon="clock-outline" />}
-          />
-
-          <Divider />
-
-          <List.Item
-            title="Unread Notifications"
-            description={`${unreadNotifications} unread`}
-            left={(props) => <List.Icon {...props} icon="bell-badge-outline" />}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* WORKSPACE */}
-      <Text variant="titleLarge" style={styles.sectionTitle}>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>
         Workspace
       </Text>
 
-      <Card style={styles.card}>
-        <Card.Content>
-          <List.Item
-            title="Workspace Name"
-            description="Project Management Workspace"
-            left={(props) => <List.Icon {...props} icon="office-building" />}
-          />
+      <SettingItem
+        icon="office-building"
+        title="Main Workspace"
+        subtitle="Quản lý workspace hiện tại"
+        color={isDarkMode ? "#8B9EFF" : "#2563EB"}
+        isDarkMode={isDarkMode}
+      />
 
-          <Divider />
+      <SettingItem
+        icon="account-group"
+        title="Workspace Members"
+        subtitle="Quản lý thành viên trong nhóm"
+        color={isDarkMode ? "#C084FC" : "#7C3AED"}
+        isDarkMode={isDarkMode}
+      />
 
-          <List.Item
-            title="Current Role"
-            description={user.role}
-            left={(props) => <List.Icon {...props} icon="account-badge" />}
-          />
-
-          <Divider />
-
-          <List.Item
-            title="Permission Level"
-            description={
-              user.role === "Admin"
-                ? "Full Access"
-                : user.role === "Manager"
-                  ? "Manage Projects & Tasks"
-                  : user.role === "Member"
-                    ? "Manage Assigned Tasks"
-                    : "View Only"
-            }
-            left={(props) => (
-              <List.Icon {...props} icon="shield-check-outline" />
-            )}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* SETTINGS */}
-      <Text variant="titleLarge" style={styles.sectionTitle}>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>
         Settings
       </Text>
 
-      <Card style={styles.card}>
-        <Card.Content>
-          {/* DARK MODE */}
-          <List.Item
-            title="Dark Mode"
-            description={
-              isDarkMode ? "Dark theme enabled" : "Light theme enabled"
-            }
-            left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
-            right={() => (
-              <Switch
-                value={isDarkMode}
-                onValueChange={() => setIsDarkMode(!isDarkMode)}
-              />
-            )}
+      <SettingItem
+        icon="theme-light-dark"
+        title="Dark Mode"
+        subtitle={isDarkMode ? "Đang bật chế độ tối" : "Đang bật chế độ sáng"}
+        color={isDarkMode ? "#C084FC" : "#0F172A"}
+        isDarkMode={isDarkMode}
+        right={
+          <Switch
+            value={isDarkMode}
+            onValueChange={() => setIsDarkMode(!isDarkMode)}
           />
+        }
+      />
 
-          <Divider />
+      <SettingItem
+        icon="account-edit"
+        title="Edit Profile"
+        subtitle="Cập nhật thông tin cá nhân"
+        color="#16A34A"
+        isDarkMode={isDarkMode}
+        onPress={() => Alert.alert("Demo", "Edit Profile frontend demo")}
+      />
 
-          {/* EDIT PROFILE */}
-          <List.Item
-            title="Edit Profile"
-            description="Update user information"
-            left={(props) => (
-              <List.Icon {...props} icon="account-edit-outline" />
-            )}
-          />
+      <SettingItem
+        icon="lock-reset"
+        title="Change Password"
+        subtitle="Đổi mật khẩu tài khoản"
+        color="#F97316"
+        isDarkMode={isDarkMode}
+        onPress={() => Alert.alert("Demo", "Change Password frontend demo")}
+      />
 
-          <Divider />
+      <SettingItem
+        icon="bell-cog"
+        title="Notification Settings"
+        subtitle="Cài đặt thông báo"
+        color="#0EA5A8"
+        isDarkMode={isDarkMode}
+        onPress={() =>
+          Alert.alert("Demo", "Notification settings frontend demo")
+        }
+      />
 
-          {/* CHANGE PASSWORD */}
-          <List.Item
-            title="Change Password"
-            description="Update account password"
-            left={(props) => <List.Icon {...props} icon="lock-reset" />}
-          />
-
-          <Divider />
-
-          {/* NOTIFICATION SETTINGS */}
-          <List.Item
-            title="Notification Settings"
-            description="Manage notification preferences"
-            left={(props) => <List.Icon {...props} icon="bell-cog-outline" />}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* LOGOUT */}
-      <Button
-        mode="contained"
-        icon="logout"
-        style={styles.logoutButton}
-        onPress={() => alert("Logout frontend demo")}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => Alert.alert("Logout", "Logout frontend demo")}
       >
-        Logout
-      </Button>
+        <LinearGradient
+          colors={isDarkMode ? ["#450A0A", "#1E293B"] : ["#FEF2F2", "#FFF1F2"]}
+          style={styles.logoutButton}
+        >
+          <MaterialCommunityIcons name="logout" size={24} color="#EF4444" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </LinearGradient>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -203,53 +308,125 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
-
+  contentContainer: {
+    padding: 18,
+    paddingBottom: 38,
+  },
   profileCard: {
-    borderRadius: 20,
-    marginBottom: 20,
-    elevation: 3,
+    borderRadius: 30,
+    padding: 24,
+    alignItems: "center",
+    marginBottom: 24,
+    overflow: "hidden",
+    borderWidth: 1,
   },
-
+  profileCircleOne: {
+    position: "absolute",
+    right: -40,
+    bottom: -40,
+    width: 160,
+    height: 130,
+    borderRadius: 90,
+  },
+  profileCircleTwo: {
+    position: "absolute",
+    left: -40,
+    top: -50,
+    width: 150,
+    height: 120,
+    borderRadius: 80,
+  },
   avatar: {
-    alignSelf: "center",
-    marginTop: 10,
-    marginBottom: 16,
-    backgroundColor: "#5B8DEF",
+    backgroundColor: "#7C3AED",
   },
-
+  avatarLabel: {
+    fontWeight: "900",
+  },
   name: {
-    textAlign: "center",
-    fontWeight: "bold",
+    marginTop: 16,
+    fontSize: 28,
+    fontWeight: "900",
   },
-
   email: {
-    textAlign: "center",
-    color: "#64748B",
     marginTop: 6,
   },
-
   roleChip: {
-    alignSelf: "center",
     marginTop: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
   },
-
+  roleText: {
+    marginLeft: 6,
+    fontWeight: "900",
+  },
   sectionTitle: {
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "900",
     marginBottom: 12,
-    marginTop: 8,
+    marginTop: 6,
   },
-
-  card: {
-    borderRadius: 18,
-    marginBottom: 20,
-    elevation: 3,
+  statRow: {
+    flexDirection: "row",
+    marginBottom: 12,
+    gap: 10,
   },
-
+  statBox: {
+    flex: 1,
+    borderRadius: 22,
+    padding: 16,
+    alignItems: "center",
+  },
+  statValue: {
+    fontSize: 26,
+    fontWeight: "900",
+    marginTop: 6,
+  },
+  statLabel: {
+    fontWeight: "800",
+  },
+  settingItem: {
+    borderRadius: 22,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  settingIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  settingTextBox: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: "900",
+  },
+  settingSubtitle: {
+    marginTop: 3,
+  },
   logoutButton: {
-    marginBottom: 40,
-    borderRadius: 14,
-    paddingVertical: 6,
+    marginTop: 10,
+    borderRadius: 22,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutText: {
+    color: "#EF4444",
+    fontWeight: "900",
+    fontSize: 16,
+    marginLeft: 8,
   },
 });
