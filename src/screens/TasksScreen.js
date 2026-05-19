@@ -15,26 +15,31 @@ import { getScreenTheme } from "../theme/appTheme";
 import { tasks, user } from "../data/mockData";
 import { hasPermission } from "../utils/permissions";
 
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+
 function TaskColorCard({ task, onPress, theme, isDarkMode }) {
   const statusColor =
     task.status === "Done"
-      ? "#16A34A"
+      ? GREEN
       : task.status === "In Progress"
-        ? "#7C3AED"
-        : "#F97316";
+        ? TEAL
+        : ORANGE;
 
   const priorityColor =
     task.priority === "High"
       ? "#EF4444"
       : task.priority === "Medium"
         ? "#F59E0B"
-        : "#22C55E";
+        : GREEN;
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
       <LinearGradient
         colors={
-          isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC", "#EEF2FF"]
+          isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC", "#ECFEFF"]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -162,7 +167,7 @@ function TaskColorCard({ task, onPress, theme, isDarkMode }) {
 
         <TouchableOpacity activeOpacity={0.85} onPress={onPress}>
           <LinearGradient
-            colors={[statusColor, "#6366F1"]}
+            colors={[statusColor, BLUE]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.detailButton}
@@ -222,7 +227,7 @@ export default function TasksScreen({ navigation }) {
       >
         <LinearGradient
           colors={
-            isDarkMode ? theme.headerCard : ["#FCF7FF", "#EEF2FF", "#F8FAFC"]
+            isDarkMode ? theme.headerCard : ["#F0FDFA", "#ECFEFF", "#F8FAFC"]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -239,6 +244,7 @@ export default function TasksScreen({ navigation }) {
 
           <View>
             <Text style={[styles.title, { color: theme.text }]}>Tasks</Text>
+
             <Text style={[styles.subtitle, { color: theme.subText }]}>
               Theo dõi công việc của team
             </Text>
@@ -247,7 +253,7 @@ export default function TasksScreen({ navigation }) {
               <MaterialCommunityIcons
                 name="shield-check"
                 size={18}
-                color="#7C3AED"
+                color={TEAL}
               />
               <Text style={styles.roleText}>Current role: {user.role}</Text>
             </View>
@@ -259,7 +265,7 @@ export default function TasksScreen({ navigation }) {
             <MaterialCommunityIcons
               name="format-list-checks"
               size={42}
-              color="#7C3AED"
+              color={TEAL}
             />
           </View>
         </LinearGradient>
@@ -272,7 +278,7 @@ export default function TasksScreen({ navigation }) {
             <MaterialCommunityIcons
               name="clipboard-list-outline"
               size={28}
-              color="#2563EB"
+              color={BLUE}
             />
             <Text style={[styles.statNumber, { color: theme.text }]}>
               {tasks.length}
@@ -283,13 +289,13 @@ export default function TasksScreen({ navigation }) {
           </LinearGradient>
 
           <LinearGradient
-            colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FFEDD5"]}
+            colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FEF3C7"]}
             style={styles.statBox}
           >
             <MaterialCommunityIcons
               name="timer-sand"
               size={28}
-              color="#F97316"
+              color={ORANGE}
             />
             <Text style={[styles.statNumber, { color: theme.text }]}>
               {todoCount}
@@ -300,13 +306,13 @@ export default function TasksScreen({ navigation }) {
           </LinearGradient>
 
           <LinearGradient
-            colors={isDarkMode ? theme.purpleCard : ["#FAF5FF", "#F3E8FF"]}
+            colors={isDarkMode ? theme.tealCard : ["#F0FDFA", "#CCFBF1"]}
             style={styles.statBox}
           >
             <MaterialCommunityIcons
               name="progress-clock"
               size={28}
-              color="#7C3AED"
+              color={TEAL}
             />
             <Text style={[styles.statNumber, { color: theme.text }]}>
               {doingCount}
@@ -323,7 +329,7 @@ export default function TasksScreen({ navigation }) {
             <MaterialCommunityIcons
               name="check-circle"
               size={28}
-              color="#16A34A"
+              color={GREEN}
             />
             <Text style={[styles.statNumber, { color: theme.text }]}>
               {doneCount}
@@ -337,6 +343,8 @@ export default function TasksScreen({ navigation }) {
         <Button
           mode="contained"
           icon="plus"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           onPress={handleCreateTask}
           style={styles.createButton}
           contentStyle={styles.buttonContent}
@@ -348,17 +356,10 @@ export default function TasksScreen({ navigation }) {
           placeholder="Search task..."
           value={search}
           onChangeText={setSearch}
-          style={[
-            styles.search,
-            {
-              backgroundColor: theme.surface,
-            },
-          ]}
-          inputStyle={{
-            color: theme.text,
-          }}
+          style={[styles.search, { backgroundColor: theme.surface }]}
+          inputStyle={{ color: theme.text }}
           placeholderTextColor={theme.subText}
-          iconColor={isDarkMode ? "#C084FC" : "#7C3AED"}
+          iconColor={TEAL}
         />
 
         <SegmentedButtons
@@ -431,7 +432,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 130,
     borderRadius: 90,
-    backgroundColor: "rgba(124,58,237,0.12)",
+    backgroundColor: "rgba(14,165,168,0.12)",
   },
   headerCircleTwo: {
     position: "absolute",
@@ -455,14 +456,14 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(124,58,237,0.12)",
+    backgroundColor: "rgba(14,165,168,0.12)",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 999,
   },
   roleText: {
     marginLeft: 6,
-    color: "#7C3AED",
+    color: TEAL,
     fontWeight: "800",
   },
   headerIcon: {

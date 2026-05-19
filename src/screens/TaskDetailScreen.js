@@ -16,24 +16,52 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { ThemeContext } from "../../App";
+import { getScreenTheme } from "../theme/appTheme";
 import { tasks, user } from "../data/mockData";
 import { hasPermission } from "../utils/permissions";
 
-function DetailPill({ icon, label, value, color }) {
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const CYAN = "#06B6D4";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+const RED = "#EF4444";
+
+function DetailPill({ icon, label, value, color, theme, isDarkMode }) {
   return (
-    <View style={[styles.detailPill, { backgroundColor: `${color}16` }]}>
+    <View
+      style={[
+        styles.detailPill,
+        {
+          backgroundColor: isDarkMode ? "#111827" : `${color}16`,
+          borderColor: isDarkMode ? "#334155" : "transparent",
+        },
+      ]}
+    >
       <MaterialCommunityIcons name={icon} size={20} color={color} />
+
       <View style={styles.detailPillText}>
-        <Text style={styles.detailLabel}>{label}</Text>
+        <Text style={[styles.detailLabel, { color: theme.subText }]}>
+          {label}
+        </Text>
         <Text style={[styles.detailValue, { color }]}>{value}</Text>
       </View>
     </View>
   );
 }
 
-function CommentCard({ item }) {
+function CommentCard({ item, theme, isDarkMode }) {
   return (
-    <LinearGradient colors={["#FFFFFF", "#F8FAFC"]} style={styles.commentCard}>
+    <LinearGradient
+      colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
+      style={[
+        styles.commentCard,
+        {
+          borderColor: theme.cardBorder,
+        },
+      ]}
+    >
       <View style={styles.commentAvatar}>
         <Text style={styles.commentAvatarText}>
           {item.user?.charAt(0)?.toUpperCase() || "U"}
@@ -41,16 +69,27 @@ function CommentCard({ item }) {
       </View>
 
       <View style={styles.commentContent}>
-        <Text style={styles.commentUser}>{item.user}</Text>
-        <Text style={styles.commentMessage}>{item.message}</Text>
+        <Text style={[styles.commentUser, { color: theme.text }]}>
+          {item.user}
+        </Text>
+        <Text style={[styles.commentMessage, { color: theme.subText }]}>
+          {item.message}
+        </Text>
       </View>
 
-      <MaterialCommunityIcons name="heart-outline" size={22} color="#94A3B8" />
+      <MaterialCommunityIcons
+        name="heart-outline"
+        size={22}
+        color={theme.subText}
+      />
     </LinearGradient>
   );
 }
 
 export default function TaskDetailScreen({ route }) {
+  const { isDarkMode } = React.useContext(ThemeContext);
+  const theme = getScreenTheme(isDarkMode);
+
   const { taskId } = route.params || {};
   const task = tasks.find((item) => item.id === taskId) || tasks[0];
 
@@ -61,17 +100,17 @@ export default function TaskDetailScreen({ route }) {
 
   const statusColor =
     task.status === "Done"
-      ? "#16A34A"
+      ? GREEN
       : task.status === "In Progress"
-        ? "#7C3AED"
-        : "#F97316";
+        ? TEAL
+        : ORANGE;
 
   const priorityColor =
     task.priority === "High"
-      ? "#EF4444"
+      ? RED
       : task.priority === "Medium"
         ? "#F59E0B"
-        : "#22C55E";
+        : GREEN;
 
   const doneSubtasks = subtasks.filter((item) => item.done).length;
   const subtaskProgress =
@@ -132,15 +171,23 @@ export default function TaskDetailScreen({ route }) {
   return (
     <>
       <ScrollView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: theme.background }]}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
         <LinearGradient
-          colors={["#F8FAFF", "#F5F3FF", "#F8FAFC"]}
+          colors={
+            isDarkMode ? theme.tealCard : ["#F0FDFA", "#ECFEFF", "#F8FAFC"]
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.headerCard}
+          style={[
+            styles.headerCard,
+            {
+              borderColor: theme.cardBorder,
+              shadowColor: theme.shadow,
+            },
+          ]}
         >
           <View style={styles.circleOne} />
           <View style={styles.circleTwo} />
@@ -160,8 +207,12 @@ export default function TaskDetailScreen({ route }) {
             </View>
 
             <View style={styles.headerTextBox}>
-              <Text style={styles.title}>{task.title}</Text>
-              <Text style={styles.description}>{task.description}</Text>
+              <Text style={[styles.title, { color: theme.text }]}>
+                {task.title}
+              </Text>
+              <Text style={[styles.description, { color: theme.subText }]}>
+                {task.description}
+              </Text>
             </View>
           </View>
 
@@ -195,21 +246,27 @@ export default function TaskDetailScreen({ route }) {
             icon="folder-outline"
             label="Project"
             value={task.project}
-            color="#2563EB"
+            color={BLUE}
+            theme={theme}
+            isDarkMode={isDarkMode}
           />
 
           <DetailPill
             icon="account-outline"
             label="Assignee"
             value={task.assignee}
-            color="#7C3AED"
+            color={TEAL}
+            theme={theme}
+            isDarkMode={isDarkMode}
           />
 
           <DetailPill
             icon="calendar-clock"
             label="Deadline"
             value={task.deadline}
-            color="#0EA5A8"
+            color={CYAN}
+            theme={theme}
+            isDarkMode={isDarkMode}
           />
 
           <DetailPill
@@ -217,6 +274,8 @@ export default function TaskDetailScreen({ route }) {
             label="Priority"
             value={task.priority}
             color={priorityColor}
+            theme={theme}
+            isDarkMode={isDarkMode}
           />
         </View>
 
@@ -224,6 +283,8 @@ export default function TaskDetailScreen({ route }) {
           <Button
             mode="contained"
             icon="check-bold"
+            buttonColor={GREEN}
+            textColor="#FFFFFF"
             style={styles.actionButton}
             contentStyle={styles.buttonContent}
             onPress={handleMarkDone}
@@ -232,8 +293,10 @@ export default function TaskDetailScreen({ route }) {
           </Button>
 
           <Button
-            mode="contained-tonal"
+            mode="contained"
             icon="pencil"
+            buttonColor={BLUE}
+            textColor="#FFFFFF"
             style={styles.actionButton}
             contentStyle={styles.buttonContent}
             onPress={handleEditTask}
@@ -243,25 +306,35 @@ export default function TaskDetailScreen({ route }) {
 
           <TouchableOpacity
             activeOpacity={0.85}
-            style={styles.deleteButton}
+            style={[
+              styles.deleteButton,
+              { backgroundColor: isDarkMode ? "#450A0A" : "#FEF2F2" },
+            ]}
             onPress={handleDeleteTask}
           >
             <MaterialCommunityIcons
               name="delete-outline"
               size={24}
-              color="#EF4444"
+              color={RED}
             />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.sectionTitle}>Subtasks</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Subtasks
+        </Text>
 
         <LinearGradient
-          colors={["#FFFFFF", "#F8FAFC"]}
-          style={styles.subtaskBox}
+          colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
+          style={[
+            styles.subtaskBox,
+            {
+              borderColor: theme.cardBorder,
+            },
+          ]}
         >
           <View style={styles.subtaskHeader}>
-            <Text style={styles.subtaskProgressText}>
+            <Text style={[styles.subtaskProgressText, { color: theme.text }]}>
               {doneSubtasks}/{subtasks.length} completed
             </Text>
 
@@ -270,7 +343,7 @@ export default function TaskDetailScreen({ route }) {
 
           <View style={styles.progressTrack}>
             <LinearGradient
-              colors={["#22C55E", "#2563EB"]}
+              colors={[GREEN, BLUE]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.progressFill, { width: `${subtaskProgress}%` }]}
@@ -278,13 +351,20 @@ export default function TaskDetailScreen({ route }) {
           </View>
 
           {subtasks.length === 0 ? (
-            <Text style={styles.emptyText}>Chưa có subtask.</Text>
+            <Text style={[styles.emptyText, { color: theme.subText }]}>
+              Chưa có subtask.
+            </Text>
           ) : (
             subtasks.map((item) => (
               <TouchableOpacity
                 activeOpacity={0.8}
                 key={item.id}
-                style={styles.subtaskItem}
+                style={[
+                  styles.subtaskItem,
+                  {
+                    backgroundColor: isDarkMode ? "#111827" : "#F8FAFC",
+                  },
+                ]}
                 onPress={() => toggleSubtask(item.id)}
               >
                 <Checkbox
@@ -293,7 +373,11 @@ export default function TaskDetailScreen({ route }) {
                 />
 
                 <Text
-                  style={[styles.subtaskTitle, item.done && styles.subtaskDone]}
+                  style={[
+                    styles.subtaskTitle,
+                    { color: item.done ? theme.subText : theme.text },
+                    item.done && styles.subtaskDone,
+                  ]}
                 >
                   {item.title}
                 </Text>
@@ -302,26 +386,37 @@ export default function TaskDetailScreen({ route }) {
           )}
         </LinearGradient>
 
-        <Text style={styles.sectionTitle}>Comments</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Comments
+        </Text>
 
         {comments.length === 0 ? (
           <LinearGradient
-            colors={["#FFFFFF", "#F8FAFC"]}
+            colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
             style={styles.emptyCommentBox}
           >
             <MaterialCommunityIcons
               name="comment-outline"
               size={36}
-              color="#94A3B8"
+              color={theme.subText}
             />
-            <Text style={styles.emptyText}>Chưa có comment.</Text>
+            <Text style={[styles.emptyText, { color: theme.subText }]}>
+              Chưa có comment.
+            </Text>
           </LinearGradient>
         ) : (
-          comments.map((item) => <CommentCard key={item.id} item={item} />)
+          comments.map((item) => (
+            <CommentCard
+              key={item.id}
+              item={item}
+              theme={theme}
+              isDarkMode={isDarkMode}
+            />
+          ))
         )}
 
         <LinearGradient
-          colors={["#FFFFFF", "#F8FAFC"]}
+          colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
           style={styles.addCommentBox}
         >
           <TextInput
@@ -337,6 +432,8 @@ export default function TaskDetailScreen({ route }) {
           <Button
             mode="contained"
             icon="send"
+            buttonColor={TEAL}
+            textColor="#FFFFFF"
             onPress={handleAddComment}
             style={styles.sendButton}
             contentStyle={styles.buttonContent}
@@ -356,7 +453,6 @@ export default function TaskDetailScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
   },
   contentContainer: {
     padding: 18,
@@ -368,7 +464,10 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
   },
   circleOne: {
     position: "absolute",
@@ -377,7 +476,7 @@ const styles = StyleSheet.create({
     width: 170,
     height: 130,
     borderRadius: 90,
-    backgroundColor: "rgba(124,58,237,0.12)",
+    backgroundColor: "rgba(14,165,168,0.12)",
   },
   circleTwo: {
     position: "absolute",
@@ -406,10 +505,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 27,
     fontWeight: "900",
-    color: "#020617",
   },
   description: {
-    color: "#64748B",
     marginTop: 6,
     lineHeight: 21,
   },
@@ -438,13 +535,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
   },
   detailPillText: {
     flex: 1,
     marginLeft: 10,
   },
   detailLabel: {
-    color: "#64748B",
     fontSize: 12,
     fontWeight: "700",
   },
@@ -456,11 +553,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 8,
+    gap: 10,
   },
   actionButton: {
     flex: 1,
     borderRadius: 16,
-    marginRight: 10,
   },
   buttonContent: {
     paddingVertical: 6,
@@ -469,14 +566,12 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 18,
-    backgroundColor: "#FEF2F2",
     alignItems: "center",
     justifyContent: "center",
   },
   sectionTitle: {
     fontSize: 24,
     fontWeight: "900",
-    color: "#020617",
     marginTop: 18,
     marginBottom: 12,
   },
@@ -484,7 +579,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
   },
   subtaskHeader: {
     flexDirection: "row",
@@ -492,11 +586,10 @@ const styles = StyleSheet.create({
   },
   subtaskProgressText: {
     fontWeight: "900",
-    color: "#0F172A",
   },
   subtaskPercent: {
     fontWeight: "900",
-    color: "#2563EB",
+    color: BLUE,
   },
   progressTrack: {
     height: 10,
@@ -513,7 +606,6 @@ const styles = StyleSheet.create({
   subtaskItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
     borderRadius: 16,
     paddingVertical: 6,
     marginTop: 8,
@@ -521,14 +613,11 @@ const styles = StyleSheet.create({
   subtaskTitle: {
     flex: 1,
     fontWeight: "800",
-    color: "#0F172A",
   },
   subtaskDone: {
-    color: "#94A3B8",
     textDecorationLine: "line-through",
   },
   emptyText: {
-    color: "#64748B",
     fontWeight: "700",
     textAlign: "center",
     marginTop: 8,
@@ -540,13 +629,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
   },
   commentAvatar: {
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: "#7C3AED",
+    backgroundColor: TEAL,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -561,10 +649,8 @@ const styles = StyleSheet.create({
   },
   commentUser: {
     fontWeight: "900",
-    color: "#0F172A",
   },
   commentMessage: {
-    color: "#64748B",
     marginTop: 3,
     lineHeight: 20,
   },

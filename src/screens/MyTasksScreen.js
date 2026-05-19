@@ -8,13 +8,18 @@ import { ThemeContext } from "../../App";
 import { getScreenTheme } from "../theme/appTheme";
 import { tasks, user } from "../data/mockData";
 
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+
 function MyTaskCard({ task, onPress, theme, isDarkMode }) {
   const statusColor =
     task.status === "Done"
-      ? "#16A34A"
+      ? GREEN
       : task.status === "In Progress"
-        ? "#2563EB"
-        : "#F97316";
+        ? TEAL
+        : ORANGE;
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
@@ -44,6 +49,7 @@ function MyTaskCard({ task, onPress, theme, isDarkMode }) {
           <Text style={[styles.taskTitle, { color: theme.text }]}>
             {task.title}
           </Text>
+
           <Text style={[styles.taskProject, { color: theme.subText }]}>
             {task.project}
           </Text>
@@ -100,7 +106,7 @@ export default function MyTasksScreen({ navigation }) {
     >
       <LinearGradient
         colors={
-          isDarkMode ? theme.headerCard : ["#ECFEFF", "#EEF2FF", "#F8FAFC"]
+          isDarkMode ? theme.headerCard : ["#ECFEFF", "#EFF6FF", "#F8FAFC"]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -108,22 +114,20 @@ export default function MyTasksScreen({ navigation }) {
           styles.headerCard,
           {
             borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
           },
         ]}
       >
         <View>
           <Text style={[styles.title, { color: theme.text }]}>My Tasks</Text>
+
           <Text style={[styles.subtitle, { color: theme.subText }]}>
             Những task đang được giao cho {user.name}
           </Text>
         </View>
 
         <View style={[styles.headerIcon, { backgroundColor: theme.softWhite }]}>
-          <MaterialCommunityIcons
-            name="account-check"
-            size={42}
-            color="#0891B2"
-          />
+          <MaterialCommunityIcons name="account-check" size={42} color={TEAL} />
         </View>
       </LinearGradient>
 
@@ -135,7 +139,7 @@ export default function MyTasksScreen({ navigation }) {
           <MaterialCommunityIcons
             name="clipboard-list"
             size={28}
-            color="#2563EB"
+            color={BLUE}
           />
           <Text style={[styles.statNumber, { color: theme.text }]}>
             {myTasks.length}
@@ -149,11 +153,7 @@ export default function MyTasksScreen({ navigation }) {
           colors={isDarkMode ? theme.greenCard : ["#F0FDF4", "#DCFCE7"]}
           style={styles.statCard}
         >
-          <MaterialCommunityIcons
-            name="check-circle"
-            size={28}
-            color="#16A34A"
-          />
+          <MaterialCommunityIcons name="check-circle" size={28} color={GREEN} />
           <Text style={[styles.statNumber, { color: theme.text }]}>
             {doneCount}
           </Text>
@@ -161,10 +161,10 @@ export default function MyTasksScreen({ navigation }) {
         </LinearGradient>
 
         <LinearGradient
-          colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FFEDD5"]}
+          colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FEF3C7"]}
           style={styles.statCard}
         >
-          <MaterialCommunityIcons name="timer-sand" size={28} color="#F97316" />
+          <MaterialCommunityIcons name="timer-sand" size={28} color={ORANGE} />
           <Text style={[styles.statNumber, { color: theme.text }]}>
             {doingCount}
           </Text>
@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
   },
   title: {
     fontSize: 34,

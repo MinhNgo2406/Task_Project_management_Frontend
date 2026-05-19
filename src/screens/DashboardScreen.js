@@ -8,6 +8,13 @@ import { ThemeContext } from "../../App";
 import { getScreenTheme } from "../theme/appTheme";
 import { projects, tasks, notifications, user } from "../data/mockData";
 
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const TEAL_DARK = "#0891B2";
+const CYAN = "#06B6D4";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+
 function StatCard({
   title,
   value,
@@ -39,6 +46,7 @@ function StatCard({
         ]}
       >
         <View style={[styles.topAccent, { backgroundColor: iconColor }]} />
+
         <View style={styles.waveOne} />
         <View style={styles.waveTwo} />
 
@@ -82,9 +90,7 @@ function RecentProjectCard({ project, navigation, theme, isDarkMode }) {
       }
     >
       <LinearGradient
-        colors={
-          isDarkMode ? theme.purpleCard : ["#FAF5FF", "#EEF2FF", "#FDF4FF"]
-        }
+        colors={isDarkMode ? theme.tealCard : ["#ECFEFF", "#EFF6FF", "#F8FAFC"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[
@@ -107,11 +113,7 @@ function RecentProjectCard({ project, navigation, theme, isDarkMode }) {
         </Text>
 
         <View style={styles.statusChip}>
-          <MaterialCommunityIcons
-            name="rocket-launch"
-            size={20}
-            color="#A855F7"
-          />
+          <MaterialCommunityIcons name="rocket-launch" size={20} color={CYAN} />
           <Text style={styles.statusText}>
             {project?.status || "In Progress"}
           </Text>
@@ -123,7 +125,7 @@ function RecentProjectCard({ project, navigation, theme, isDarkMode }) {
 
         <View style={styles.progressBackground}>
           <LinearGradient
-            colors={["#A855F7", "#2563EB"]}
+            colors={[CYAN, BLUE]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${progress}%` }]}
@@ -135,7 +137,7 @@ function RecentProjectCard({ project, navigation, theme, isDarkMode }) {
             <MaterialCommunityIcons
               name="account-group"
               size={24}
-              color="#A855F7"
+              color={CYAN}
             />
           </View>
 
@@ -156,7 +158,7 @@ function TaskPreviewCard({ task, navigation, theme, isDarkMode }) {
       ? "#EF4444"
       : task.priority === "Medium"
         ? "#F59E0B"
-        : "#22C55E";
+        : GREEN;
 
   return (
     <TouchableOpacity
@@ -181,7 +183,7 @@ function TaskPreviewCard({ task, navigation, theme, isDarkMode }) {
           <MaterialCommunityIcons
             name="clipboard-check-outline"
             size={30}
-            color="#0891B2"
+            color={TEAL_DARK}
           />
         </View>
 
@@ -189,6 +191,7 @@ function TaskPreviewCard({ task, navigation, theme, isDarkMode }) {
           <Text style={[styles.taskTitle, { color: theme.text }]}>
             {task.title}
           </Text>
+
           <Text style={[styles.taskProject, { color: theme.subText }]}>
             {task.project}
           </Text>
@@ -197,6 +200,7 @@ function TaskPreviewCard({ task, navigation, theme, isDarkMode }) {
             <View
               style={[styles.priorityDot, { backgroundColor: priorityColor }]}
             />
+
             <Text style={[styles.taskMeta, { color: theme.subText }]}>
               {task.priority}
             </Text>
@@ -207,6 +211,7 @@ function TaskPreviewCard({ task, navigation, theme, isDarkMode }) {
               color={theme.subText}
               style={{ marginLeft: 12 }}
             />
+
             <Text style={[styles.taskMeta, { color: theme.subText }]}>
               {task.deadline}
             </Text>
@@ -244,6 +249,7 @@ export default function DashboardScreen({ navigation }) {
         <Text style={[styles.helloText, { color: theme.text }]}>
           Hello, {user?.name || "Ngô Minh"}
         </Text>
+
         <Text style={[styles.subtitle, { color: theme.subText }]}>
           Quản lý dự án của bạn hôm nay
         </Text>
@@ -254,8 +260,8 @@ export default function DashboardScreen({ navigation }) {
           title="Projects"
           value={projects.length}
           icon="briefcase-variant"
-          colors={isDarkMode ? theme.blueCard : ["#F8FAFF", "#EAF2FF"]}
-          iconColor="#2563EB"
+          colors={isDarkMode ? theme.blueCard : ["#EFF6FF", "#DBEAFE"]}
+          iconColor={BLUE}
           theme={theme}
           onPress={() => navigation.navigate("Projects")}
         />
@@ -264,8 +270,8 @@ export default function DashboardScreen({ navigation }) {
           title="Tasks"
           value={tasks.length}
           icon="format-list-checks"
-          colors={isDarkMode ? theme.purpleCard : ["#FCF7FF", "#F3E8FF"]}
-          iconColor="#7C3AED"
+          colors={isDarkMode ? theme.tealCard : ["#F0FDFA", "#CCFBF1"]}
+          iconColor={TEAL}
           theme={theme}
           onPress={() => navigation.navigate("Tasks")}
         />
@@ -275,7 +281,7 @@ export default function DashboardScreen({ navigation }) {
           value={doneTasks}
           icon="check-bold"
           colors={isDarkMode ? theme.greenCard : ["#F0FDF4", "#DCFCE7"]}
-          iconColor="#16A34A"
+          iconColor={GREEN}
           theme={theme}
           onPress={() => navigation.navigate("Tasks")}
         />
@@ -285,7 +291,7 @@ export default function DashboardScreen({ navigation }) {
           value={pendingTasks}
           icon="timer-sand"
           colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FEF3C7"]}
-          iconColor="#F97316"
+          iconColor={ORANGE}
           theme={theme}
           onPress={() => navigation.navigate("Tasks")}
         />
@@ -295,7 +301,7 @@ export default function DashboardScreen({ navigation }) {
           value={unreadNotifications}
           icon="email-outline"
           colors={isDarkMode ? theme.cyanCard : ["#ECFEFF", "#DFFBFF"]}
-          iconColor="#0EA5A8"
+          iconColor={TEAL}
           fullWidth
           badge={unreadNotifications}
           theme={theme}
@@ -341,6 +347,8 @@ export default function DashboardScreen({ navigation }) {
         <Button
           mode="contained"
           icon="plus"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           style={styles.actionButton}
           contentStyle={styles.actionButtonContent}
           onPress={() => navigation.navigate("CreateProject")}
@@ -349,8 +357,10 @@ export default function DashboardScreen({ navigation }) {
         </Button>
 
         <Button
-          mode="contained-tonal"
+          mode="contained"
           icon="plus-circle-outline"
+          buttonColor={isDarkMode ? "#164E63" : "#CCFBF1"}
+          textColor={isDarkMode ? "#ECFEFF" : "#0F766E"}
           style={styles.actionButton}
           contentStyle={styles.actionButtonContent}
           onPress={() => navigation.navigate("CreateTask")}
@@ -423,7 +433,7 @@ const styles = StyleSheet.create({
     width: 145,
     height: 95,
     borderRadius: 80,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(14,165,168,0.10)",
     transform: [{ rotate: "-22deg" }],
   },
   waveTwo: {
@@ -433,7 +443,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 80,
     borderRadius: 70,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(37,99,235,0.08)",
     transform: [{ rotate: "-18deg" }],
   },
   statContent: {
@@ -450,8 +460,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   iconCircle: {
-    width: 40,
-    height: 40,
+    width: 70,
+    height: 70,
     borderRadius: 35,
     alignItems: "center",
     justifyContent: "center",
@@ -498,7 +508,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
   seeAllText: {
-    color: "#2563EB",
+    color: BLUE,
     fontWeight: "800",
     fontSize: 15,
   },
@@ -519,7 +529,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 120,
     borderRadius: 80,
-    backgroundColor: "rgba(168,85,247,0.12)",
+    backgroundColor: "rgba(14,165,168,0.12)",
     transform: [{ rotate: "-20deg" }],
   },
   projectCircleTwo: {
@@ -546,14 +556,14 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(124,58,237,0.14)",
+    backgroundColor: "rgba(14,165,168,0.14)",
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 999,
   },
   statusText: {
     marginLeft: 8,
-    color: "#A855F7",
+    color: TEAL,
     fontSize: 15,
     fontWeight: "800",
   },
@@ -582,7 +592,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 36,
     borderRadius: 16,
-    backgroundColor: "rgba(124,58,237,0.14)",
+    backgroundColor: "rgba(14,165,168,0.14)",
     alignItems: "center",
     justifyContent: "center",
   },

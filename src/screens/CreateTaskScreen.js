@@ -4,7 +4,19 @@ import { Text, TextInput, Button, SegmentedButtons } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { ThemeContext } from "../../App";
+import { getScreenTheme } from "../theme/appTheme";
+
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+const RED = "#EF4444";
+
 export default function CreateTaskScreen({ navigation }) {
+  const { isDarkMode } = React.useContext(ThemeContext);
+  const theme = getScreenTheme(isDarkMode);
+
   const [title, setTitle] = React.useState("");
   const [project, setProject] = React.useState("");
   const [assignee, setAssignee] = React.useState("");
@@ -36,54 +48,74 @@ export default function CreateTaskScreen({ navigation }) {
   };
 
   const priorityColor =
-    priority === "High"
-      ? "#EF4444"
-      : priority === "Medium"
-        ? "#F59E0B"
-        : "#22C55E";
+    priority === "High" ? RED : priority === "Medium" ? "#F59E0B" : GREEN;
 
   const statusColor =
-    status === "Done"
-      ? "#16A34A"
-      : status === "In Progress"
-        ? "#7C3AED"
-        : "#F97316";
+    status === "Done" ? GREEN : status === "In Progress" ? TEAL : ORANGE;
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
       <LinearGradient
-        colors={["#FCF7FF", "#EEF2FF", "#F8FAFC"]}
+        colors={
+          isDarkMode ? theme.headerCard : ["#F0FDFA", "#ECFEFF", "#F8FAFC"]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerCard}
+        style={[
+          styles.headerCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
       >
+        <View style={styles.headerCircleOne} />
+        <View style={styles.headerCircleTwo} />
+
         <View>
-          <Text style={styles.title}>Create Task</Text>
-          <Text style={styles.subtitle}>Tạo công việc mới cho project</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Create Task</Text>
+
+          <Text style={[styles.subtitle, { color: theme.subText }]}>
+            Tạo công việc mới cho project
+          </Text>
         </View>
 
-        <View style={styles.headerIcon}>
+        <View style={[styles.headerIcon, { backgroundColor: theme.softWhite }]}>
           <MaterialCommunityIcons
             name="clipboard-plus"
             size={42}
-            color="#7C3AED"
+            color={TEAL}
           />
         </View>
       </LinearGradient>
 
-      <LinearGradient colors={["#FFFFFF", "#F8FAFC"]} style={styles.formCard}>
-        <Text style={styles.sectionTitle}>Task Information</Text>
+      <LinearGradient
+        colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
+        style={[
+          styles.formCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
+      >
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Task Information
+        </Text>
 
         <TextInput
           label="Task title"
           value={title}
           onChangeText={setTitle}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={TEAL}
           left={<TextInput.Icon icon="clipboard-text-outline" />}
         />
 
@@ -92,7 +124,10 @@ export default function CreateTaskScreen({ navigation }) {
           value={project}
           onChangeText={setProject}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={BLUE}
           left={<TextInput.Icon icon="folder-outline" />}
         />
 
@@ -101,7 +136,10 @@ export default function CreateTaskScreen({ navigation }) {
           value={assignee}
           onChangeText={setAssignee}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={TEAL}
           left={<TextInput.Icon icon="account-outline" />}
         />
 
@@ -111,7 +149,10 @@ export default function CreateTaskScreen({ navigation }) {
           value={deadline}
           onChangeText={setDeadline}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={BLUE}
           left={<TextInput.Icon icon="calendar-clock" />}
         />
 
@@ -122,11 +163,14 @@ export default function CreateTaskScreen({ navigation }) {
           mode="outlined"
           multiline
           numberOfLines={4}
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={TEAL}
           left={<TextInput.Icon icon="text-box-outline" />}
         />
 
-        <Text style={styles.label}>Priority</Text>
+        <Text style={[styles.label, { color: theme.text }]}>Priority</Text>
 
         <SegmentedButtons
           value={priority}
@@ -139,7 +183,7 @@ export default function CreateTaskScreen({ navigation }) {
           style={styles.segment}
         />
 
-        <Text style={styles.label}>Status</Text>
+        <Text style={[styles.label, { color: theme.text }]}>Status</Text>
 
         <SegmentedButtons
           value={status}
@@ -153,7 +197,7 @@ export default function CreateTaskScreen({ navigation }) {
         />
 
         <LinearGradient
-          colors={["#F0FDFA", "#ECFEFF"]}
+          colors={isDarkMode ? theme.tealCard : ["#F0FDFA", "#ECFEFF"]}
           style={styles.previewBox}
         >
           <View
@@ -170,11 +214,11 @@ export default function CreateTaskScreen({ navigation }) {
           </View>
 
           <View style={styles.previewTextBox}>
-            <Text style={styles.previewTitle}>
+            <Text style={[styles.previewTitle, { color: theme.text }]}>
               {title.trim() || "Task Preview"}
             </Text>
 
-            <Text style={styles.previewSubtitle}>
+            <Text style={[styles.previewSubtitle, { color: theme.subText }]}>
               {project.trim() || "Project name"} •{" "}
               {assignee.trim() || "Assignee"}
             </Text>
@@ -210,6 +254,8 @@ export default function CreateTaskScreen({ navigation }) {
         <Button
           mode="contained"
           icon="plus"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           onPress={handleCreate}
           style={styles.createButton}
           contentStyle={styles.buttonContent}
@@ -219,6 +265,7 @@ export default function CreateTaskScreen({ navigation }) {
 
         <Button
           mode="text"
+          textColor={TEAL}
           onPress={() => navigation.goBack()}
           style={styles.cancelButton}
         >
@@ -232,7 +279,6 @@ export default function CreateTaskScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
   },
   contentContainer: {
     padding: 18,
@@ -245,24 +291,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  headerCircleOne: {
+    position: "absolute",
+    right: -38,
+    bottom: -42,
+    width: 160,
+    height: 130,
+    borderRadius: 90,
+    backgroundColor: "rgba(14,165,168,0.12)",
+  },
+  headerCircleTwo: {
+    position: "absolute",
+    left: -42,
+    top: -50,
+    width: 150,
+    height: 120,
+    borderRadius: 80,
+    backgroundColor: "rgba(37,99,235,0.10)",
   },
   title: {
     fontSize: 32,
     fontWeight: "900",
-    color: "#020617",
   },
   subtitle: {
-    color: "#64748B",
     fontSize: 16,
     marginTop: 6,
+    maxWidth: 230,
   },
   headerIcon: {
     width: 82,
     height: 82,
     borderRadius: 41,
-    backgroundColor: "rgba(255,255,255,0.78)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -270,22 +336,22 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     padding: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: "900",
-    color: "#020617",
     marginBottom: 16,
   },
   input: {
     marginBottom: 14,
-    backgroundColor: "#FFFFFF",
   },
   label: {
     fontSize: 15,
     fontWeight: "900",
-    color: "#0F172A",
     marginBottom: 10,
   },
   segment: {
@@ -312,10 +378,8 @@ const styles = StyleSheet.create({
   previewTitle: {
     fontSize: 18,
     fontWeight: "900",
-    color: "#0F172A",
   },
   previewSubtitle: {
-    color: "#64748B",
     marginTop: 4,
   },
   previewChipRow: {

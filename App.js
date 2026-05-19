@@ -14,7 +14,10 @@ export const ThemeContext = createContext();
 
 const lightColors = {
   primary: "#2563EB",
-  secondary: "#7C3AED",
+
+  // Đổi màu phụ từ tím sang xanh ngọc
+  secondary: "#0EA5A8",
+
   background: "#F8FAFC",
   surface: "#FFFFFF",
   card: "#FFFFFF",
@@ -25,7 +28,10 @@ const lightColors = {
 
 const darkColors = {
   primary: "#8B9EFF",
-  secondary: "#C084FC",
+
+  // Đổi màu phụ từ tím sang xanh ngọc sáng
+  secondary: "#67E8F9",
+
   background: "#0F172A",
   surface: "#1E293B",
   card: "#1E293B",

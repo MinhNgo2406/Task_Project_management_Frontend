@@ -4,7 +4,17 @@ import { Text, TextInput, Button, SegmentedButtons } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { ThemeContext } from "../../App";
+import { getScreenTheme } from "../theme/appTheme";
+
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const CYAN = "#06B6D4";
+
 export default function CreateProjectScreen({ navigation }) {
+  const { isDarkMode } = React.useContext(ThemeContext);
+  const theme = getScreenTheme(isDarkMode);
+
   const [name, setName] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [deadline, setDeadline] = React.useState("");
@@ -27,39 +37,65 @@ export default function CreateProjectScreen({ navigation }) {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
       <LinearGradient
-        colors={["#EFF6FF", "#F5F3FF", "#F8FAFC"]}
+        colors={
+          isDarkMode ? theme.headerCard : ["#EFF6FF", "#ECFEFF", "#F8FAFC"]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerCard}
+        style={[
+          styles.headerCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
       >
+        <View style={styles.headerCircleOne} />
+        <View style={styles.headerCircleTwo} />
+
         <View>
-          <Text style={styles.title}>Create Project</Text>
-          <Text style={styles.subtitle}>Tạo dự án mới cho team của bạn</Text>
+          <Text style={[styles.title, { color: theme.text }]}>
+            Create Project
+          </Text>
+
+          <Text style={[styles.subtitle, { color: theme.subText }]}>
+            Tạo dự án mới cho team của bạn
+          </Text>
         </View>
 
-        <View style={styles.headerIcon}>
-          <MaterialCommunityIcons
-            name="folder-plus"
-            size={42}
-            color="#2563EB"
-          />
+        <View style={[styles.headerIcon, { backgroundColor: theme.softWhite }]}>
+          <MaterialCommunityIcons name="folder-plus" size={42} color={BLUE} />
         </View>
       </LinearGradient>
 
-      <LinearGradient colors={["#FFFFFF", "#F8FAFC"]} style={styles.formCard}>
-        <Text style={styles.sectionTitle}>Project Information</Text>
+      <LinearGradient
+        colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
+        style={[
+          styles.formCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
+      >
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Project Information
+        </Text>
 
         <TextInput
           label="Project name"
           value={name}
           onChangeText={setName}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={BLUE}
           left={<TextInput.Icon icon="briefcase-outline" />}
         />
 
@@ -70,7 +106,10 @@ export default function CreateProjectScreen({ navigation }) {
           mode="outlined"
           multiline
           numberOfLines={4}
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={TEAL}
           left={<TextInput.Icon icon="text-box-outline" />}
         />
 
@@ -80,7 +119,10 @@ export default function CreateProjectScreen({ navigation }) {
           value={deadline}
           onChangeText={setDeadline}
           mode="outlined"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={TEAL}
           left={<TextInput.Icon icon="calendar-clock" />}
         />
 
@@ -91,11 +133,16 @@ export default function CreateProjectScreen({ navigation }) {
           onChangeText={setMembers}
           mode="outlined"
           keyboardType="numeric"
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.surface }]}
+          textColor={theme.text}
+          outlineColor={theme.border}
+          activeOutlineColor={BLUE}
           left={<TextInput.Icon icon="account-group-outline" />}
         />
 
-        <Text style={styles.label}>Project Status</Text>
+        <Text style={[styles.label, { color: theme.text }]}>
+          Project Status
+        </Text>
 
         <SegmentedButtons
           value={status}
@@ -109,22 +156,23 @@ export default function CreateProjectScreen({ navigation }) {
         />
 
         <LinearGradient
-          colors={["#FAF5FF", "#EEF2FF"]}
+          colors={isDarkMode ? theme.tealCard : ["#F0FDFA", "#CCFBF1"]}
           style={styles.previewBox}
         >
           <View style={styles.previewIcon}>
             <MaterialCommunityIcons
               name="rocket-launch"
               size={30}
-              color="#7C3AED"
+              color={TEAL}
             />
           </View>
 
           <View style={styles.previewTextBox}>
-            <Text style={styles.previewTitle}>
+            <Text style={[styles.previewTitle, { color: theme.text }]}>
               {name.trim() || "Project Preview"}
             </Text>
-            <Text style={styles.previewSubtitle}>
+
+            <Text style={[styles.previewSubtitle, { color: theme.subText }]}>
               {description.trim() || "Mô tả project sẽ hiển thị ở đây."}
             </Text>
           </View>
@@ -133,6 +181,8 @@ export default function CreateProjectScreen({ navigation }) {
         <Button
           mode="contained"
           icon="plus"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           onPress={handleCreate}
           style={styles.createButton}
           contentStyle={styles.buttonContent}
@@ -142,6 +192,7 @@ export default function CreateProjectScreen({ navigation }) {
 
         <Button
           mode="text"
+          textColor={TEAL}
           onPress={() => navigation.goBack()}
           style={styles.cancelButton}
         >
@@ -155,7 +206,6 @@ export default function CreateProjectScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
   },
   contentContainer: {
     padding: 18,
@@ -168,24 +218,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  headerCircleOne: {
+    position: "absolute",
+    right: -38,
+    bottom: -42,
+    width: 160,
+    height: 130,
+    borderRadius: 90,
+    backgroundColor: "rgba(14,165,168,0.12)",
+  },
+  headerCircleTwo: {
+    position: "absolute",
+    left: -42,
+    top: -50,
+    width: 150,
+    height: 120,
+    borderRadius: 80,
+    backgroundColor: "rgba(37,99,235,0.10)",
   },
   title: {
     fontSize: 32,
     fontWeight: "900",
-    color: "#020617",
   },
   subtitle: {
-    color: "#64748B",
     fontSize: 16,
     marginTop: 6,
+    maxWidth: 230,
   },
   headerIcon: {
     width: 82,
     height: 82,
     borderRadius: 41,
-    backgroundColor: "rgba(255,255,255,0.78)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -193,22 +263,22 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     padding: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: "900",
-    color: "#020617",
     marginBottom: 16,
   },
   input: {
     marginBottom: 14,
-    backgroundColor: "#FFFFFF",
   },
   label: {
     fontSize: 15,
     fontWeight: "900",
-    color: "#0F172A",
     marginBottom: 10,
   },
   segment: {
@@ -225,7 +295,7 @@ const styles = StyleSheet.create({
     width: 58,
     height: 58,
     borderRadius: 29,
-    backgroundColor: "rgba(124,58,237,0.14)",
+    backgroundColor: "rgba(14,165,168,0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -236,10 +306,8 @@ const styles = StyleSheet.create({
   previewTitle: {
     fontSize: 18,
     fontWeight: "900",
-    color: "#0F172A",
   },
   previewSubtitle: {
-    color: "#64748B",
     marginTop: 4,
     lineHeight: 20,
   },

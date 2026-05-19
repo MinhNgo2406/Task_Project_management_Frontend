@@ -13,10 +13,16 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ThemeContext } from "../../App";
 import { user, projects, tasks, notifications } from "../data/mockData";
 
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+
 function StatBox({ icon, label, value, color, colors, isDarkMode }) {
   return (
     <LinearGradient colors={colors} style={styles.statBox}>
       <MaterialCommunityIcons name={icon} size={28} color={color} />
+
       <Text
         style={[
           styles.statValue,
@@ -25,6 +31,7 @@ function StatBox({ icon, label, value, color, colors, isDarkMode }) {
       >
         {value}
       </Text>
+
       <Text
         style={[
           styles.statLabel,
@@ -102,7 +109,7 @@ export default function ProfileScreen() {
 
   const profileColors = isDarkMode
     ? ["#1E293B", "#0F172A", "#111827"]
-    : ["#EEF2FF", "#F5F3FF", "#F8FAFC"];
+    : ["#ECFEFF", "#EFF6FF", "#F8FAFC"];
 
   return (
     <ScrollView
@@ -124,17 +131,18 @@ export default function ProfileScreen() {
             styles.profileCircleOne,
             {
               backgroundColor: isDarkMode
-                ? "rgba(192,132,252,0.16)"
-                : "rgba(124,58,237,0.12)",
+                ? "rgba(14,165,168,0.18)"
+                : "rgba(14,165,168,0.12)",
             },
           ]}
         />
+
         <View
           style={[
             styles.profileCircleTwo,
             {
               backgroundColor: isDarkMode
-                ? "rgba(139,158,255,0.14)"
+                ? "rgba(37,99,235,0.14)"
                 : "rgba(37,99,235,0.10)",
             },
           ]}
@@ -148,6 +156,7 @@ export default function ProfileScreen() {
         />
 
         <Text style={[styles.name, { color: colors.text }]}>{user.name}</Text>
+
         <Text style={[styles.email, { color: colors.subText }]}>
           {user.email}
         </Text>
@@ -157,24 +166,17 @@ export default function ProfileScreen() {
             styles.roleChip,
             {
               backgroundColor: isDarkMode
-                ? "rgba(192,132,252,0.18)"
-                : "rgba(124,58,237,0.14)",
+                ? "rgba(14,165,168,0.18)"
+                : "rgba(14,165,168,0.14)",
             },
           ]}
         >
           <MaterialCommunityIcons
             name="shield-account"
             size={18}
-            color={isDarkMode ? "#C084FC" : "#7C3AED"}
+            color={TEAL}
           />
-          <Text
-            style={[
-              styles.roleText,
-              { color: isDarkMode ? "#C084FC" : "#6D28D9" },
-            ]}
-          >
-            {user.role}
-          </Text>
+          <Text style={styles.roleText}>{user.role}</Text>
         </View>
       </LinearGradient>
 
@@ -187,7 +189,7 @@ export default function ProfileScreen() {
           icon="folder-multiple"
           label="Projects"
           value={projects.length}
-          color={isDarkMode ? "#8B9EFF" : "#2563EB"}
+          color={BLUE}
           colors={isDarkMode ? ["#1E293B", "#172554"] : ["#EFF6FF", "#DBEAFE"]}
           isDarkMode={isDarkMode}
         />
@@ -196,7 +198,7 @@ export default function ProfileScreen() {
           icon="check-circle"
           label="Done"
           value={completedTasks}
-          color="#22C55E"
+          color={GREEN}
           colors={isDarkMode ? ["#1E293B", "#14532D"] : ["#F0FDF4", "#DCFCE7"]}
           isDarkMode={isDarkMode}
         />
@@ -207,8 +209,8 @@ export default function ProfileScreen() {
           icon="timer-sand"
           label="Pending"
           value={pendingTasks}
-          color="#F97316"
-          colors={isDarkMode ? ["#1E293B", "#431407"] : ["#FFF7ED", "#FFEDD5"]}
+          color={ORANGE}
+          colors={isDarkMode ? ["#1E293B", "#431407"] : ["#FFF7ED", "#FEF3C7"]}
           isDarkMode={isDarkMode}
         />
 
@@ -216,8 +218,8 @@ export default function ProfileScreen() {
           icon="bell-ring"
           label="Unread"
           value={unreadNotifications}
-          color="#0EA5A8"
-          colors={isDarkMode ? ["#1E293B", "#164E63"] : ["#ECFEFF", "#CFFAFE"]}
+          color={TEAL}
+          colors={isDarkMode ? ["#1E293B", "#164E63"] : ["#ECFEFF", "#DFFBFF"]}
           isDarkMode={isDarkMode}
         />
       </View>
@@ -230,7 +232,7 @@ export default function ProfileScreen() {
         icon="office-building"
         title="Main Workspace"
         subtitle="Quản lý workspace hiện tại"
-        color={isDarkMode ? "#8B9EFF" : "#2563EB"}
+        color={BLUE}
         isDarkMode={isDarkMode}
       />
 
@@ -238,7 +240,7 @@ export default function ProfileScreen() {
         icon="account-group"
         title="Workspace Members"
         subtitle="Quản lý thành viên trong nhóm"
-        color={isDarkMode ? "#C084FC" : "#7C3AED"}
+        color={TEAL}
         isDarkMode={isDarkMode}
       />
 
@@ -250,7 +252,7 @@ export default function ProfileScreen() {
         icon="theme-light-dark"
         title="Dark Mode"
         subtitle={isDarkMode ? "Đang bật chế độ tối" : "Đang bật chế độ sáng"}
-        color={isDarkMode ? "#C084FC" : "#0F172A"}
+        color={isDarkMode ? "#67E8F9" : "#0F172A"}
         isDarkMode={isDarkMode}
         right={
           <Switch
@@ -264,7 +266,7 @@ export default function ProfileScreen() {
         icon="account-edit"
         title="Edit Profile"
         subtitle="Cập nhật thông tin cá nhân"
-        color="#16A34A"
+        color={GREEN}
         isDarkMode={isDarkMode}
         onPress={() => Alert.alert("Demo", "Edit Profile frontend demo")}
       />
@@ -273,7 +275,7 @@ export default function ProfileScreen() {
         icon="lock-reset"
         title="Change Password"
         subtitle="Đổi mật khẩu tài khoản"
-        color="#F97316"
+        color={ORANGE}
         isDarkMode={isDarkMode}
         onPress={() => Alert.alert("Demo", "Change Password frontend demo")}
       />
@@ -282,7 +284,7 @@ export default function ProfileScreen() {
         icon="bell-cog"
         title="Notification Settings"
         subtitle="Cài đặt thông báo"
-        color="#0EA5A8"
+        color={TEAL}
         isDarkMode={isDarkMode}
         onPress={() =>
           Alert.alert("Demo", "Notification settings frontend demo")
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
     borderRadius: 80,
   },
   avatar: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: TEAL,
   },
   avatarLabel: {
     fontWeight: "900",
@@ -361,6 +363,7 @@ const styles = StyleSheet.create({
   },
   roleText: {
     marginLeft: 6,
+    color: TEAL,
     fontWeight: "900",
   },
   sectionTitle: {

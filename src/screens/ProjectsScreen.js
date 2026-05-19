@@ -9,25 +9,32 @@ import { getScreenTheme } from "../theme/appTheme";
 import { projects, user } from "../data/mockData";
 import { hasPermission } from "../utils/permissions";
 
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+
 function ProjectCardColor({ project, index, onPress, theme, isDarkMode }) {
   const lightColors = [
-    ["#F8FAFF", "#EAF2FF"],
-    ["#FCF7FF", "#F3E8FF"],
+    ["#EFF6FF", "#DBEAFE"],
+    ["#F0FDFA", "#CCFBF1"],
     ["#F0FDF4", "#DCFCE7"],
     ["#FFF7ED", "#FEF3C7"],
   ];
 
   const darkColors = [
     theme.blueCard,
-    theme.purpleCard,
+    theme.tealCard,
     theme.greenCard,
     theme.orangeCard,
   ];
 
-  const iconColors = ["#2563EB", "#7C3AED", "#16A34A", "#F97316"];
+  const iconColors = [BLUE, TEAL, GREEN, ORANGE];
+
   const colors = isDarkMode
     ? darkColors[index % darkColors.length]
     : lightColors[index % lightColors.length];
+
   const iconColor = iconColors[index % iconColors.length];
 
   return (
@@ -63,6 +70,7 @@ function ProjectCardColor({ project, index, onPress, theme, isDarkMode }) {
             <Text style={[styles.projectTitle, { color: theme.text }]}>
               {project.name}
             </Text>
+
             <Text style={[styles.projectDescription, { color: theme.subText }]}>
               {project.description}
             </Text>
@@ -110,7 +118,7 @@ function ProjectCardColor({ project, index, onPress, theme, isDarkMode }) {
 
         <View style={styles.progressTrack}>
           <LinearGradient
-            colors={[iconColor, "#2563EB"]}
+            colors={[iconColor, BLUE]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${project.progress}%` }]}
@@ -161,7 +169,7 @@ export default function ProjectsScreen({ navigation }) {
       >
         <LinearGradient
           colors={
-            isDarkMode ? theme.headerCard : ["#EFF6FF", "#F5F3FF", "#F8FAFC"]
+            isDarkMode ? theme.headerCard : ["#EFF6FF", "#ECFEFF", "#F8FAFC"]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -169,11 +177,13 @@ export default function ProjectsScreen({ navigation }) {
             styles.headerCard,
             {
               borderColor: theme.cardBorder,
+              shadowColor: theme.shadow,
             },
           ]}
         >
           <View>
             <Text style={[styles.title, { color: theme.text }]}>Projects</Text>
+
             <Text style={[styles.subtitle, { color: theme.subText }]}>
               Quản lý tất cả dự án của bạn
             </Text>
@@ -182,7 +192,7 @@ export default function ProjectsScreen({ navigation }) {
               <MaterialCommunityIcons
                 name="shield-account"
                 size={18}
-                color="#2563EB"
+                color={BLUE}
               />
               <Text style={styles.roleText}>Current role: {user.role}</Text>
             </View>
@@ -194,7 +204,7 @@ export default function ProjectsScreen({ navigation }) {
             <MaterialCommunityIcons
               name="folder-multiple"
               size={42}
-              color="#2563EB"
+              color={BLUE}
             />
           </View>
         </LinearGradient>
@@ -206,12 +216,14 @@ export default function ProjectsScreen({ navigation }) {
           style={[styles.search, { backgroundColor: theme.surface }]}
           inputStyle={{ color: theme.text }}
           placeholderTextColor={theme.subText}
-          iconColor="#2563EB"
+          iconColor={BLUE}
         />
 
         <Button
           mode="contained"
           icon="plus"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           onPress={handleCreateProject}
           style={styles.createButton}
           contentStyle={styles.buttonContent}
@@ -257,6 +269,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     borderWidth: 1,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
   },
   title: {
     fontSize: 34,
@@ -278,7 +294,7 @@ const styles = StyleSheet.create({
   },
   roleText: {
     marginLeft: 6,
-    color: "#2563EB",
+    color: BLUE,
     fontWeight: "800",
   },
   headerIcon: {
@@ -325,7 +341,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 100,
     borderRadius: 90,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(14,165,168,0.10)",
     transform: [{ rotate: "-20deg" }],
   },
   waveTwo: {
@@ -335,7 +351,7 @@ const styles = StyleSheet.create({
     width: 130,
     height: 90,
     borderRadius: 70,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(37,99,235,0.08)",
     transform: [{ rotate: "-14deg" }],
   },
   projectTop: {

@@ -8,8 +8,10 @@ import { ThemeContext } from "../../App";
 import { getScreenTheme } from "../theme/appTheme";
 import { notifications as defaultNotifications } from "../data/mockData";
 
+const TEAL = "#0EA5A8";
+
 function NotificationCard({ item, onPress, theme, isDarkMode }) {
-  const color = item.read ? theme.subText : "#0EA5A8";
+  const color = item.read ? theme.subText : TEAL;
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
@@ -45,6 +47,7 @@ function NotificationCard({ item, onPress, theme, isDarkMode }) {
           <Text style={[styles.notificationTitle, { color: theme.text }]}>
             {item.title}
           </Text>
+
           <Text style={[styles.notificationMessage, { color: theme.subText }]}>
             {item.message}
           </Text>
@@ -90,7 +93,7 @@ export default function NotificationsScreen() {
     >
       <LinearGradient
         colors={
-          isDarkMode ? theme.headerCard : ["#ECFEFF", "#EEF2FF", "#F8FAFC"]
+          isDarkMode ? theme.headerCard : ["#ECFEFF", "#EFF6FF", "#F8FAFC"]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -98,6 +101,7 @@ export default function NotificationsScreen() {
           styles.headerCard,
           {
             borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
           },
         ]}
       >
@@ -105,6 +109,7 @@ export default function NotificationsScreen() {
           <Text style={[styles.title, { color: theme.text }]}>
             Notifications
           </Text>
+
           <Text style={[styles.subtitle, { color: theme.subText }]}>
             Bạn có {unreadCount} thông báo chưa đọc
           </Text>
@@ -114,8 +119,9 @@ export default function NotificationsScreen() {
           <MaterialCommunityIcons
             name="bell-ring-outline"
             size={42}
-            color="#0EA5A8"
+            color={TEAL}
           />
+
           {unreadCount > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{unreadCount}</Text>
@@ -127,6 +133,8 @@ export default function NotificationsScreen() {
       <Button
         mode="contained"
         icon="check-all"
+        buttonColor={TEAL}
+        textColor="#FFFFFF"
         onPress={markAllAsRead}
         style={styles.button}
         contentStyle={styles.buttonContent}
@@ -163,6 +171,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
   },
   title: {
     fontSize: 32,
@@ -186,7 +198,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#0EA5A8",
+    backgroundColor: TEAL,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -236,6 +248,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: "#0EA5A8",
+    backgroundColor: TEAL,
   },
 });

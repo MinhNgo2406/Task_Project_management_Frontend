@@ -10,41 +10,58 @@ import { Text, Button } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { ThemeContext } from "../../App";
+import { getScreenTheme } from "../theme/appTheme";
 import { projects, tasks, user } from "../data/mockData";
 import { hasPermission } from "../utils/permissions";
 
-function InfoBox({ icon, label, value, color, colors }) {
+const BLUE = "#2563EB";
+const TEAL = "#0EA5A8";
+const CYAN = "#06B6D4";
+const GREEN = "#16A34A";
+const ORANGE = "#F97316";
+const RED = "#EF4444";
+
+function InfoBox({ icon, label, value, color, colors, theme }) {
   return (
     <LinearGradient colors={colors} style={styles.infoBox}>
       <MaterialCommunityIcons name={icon} size={28} color={color} />
-      <Text style={styles.infoValue}>{value}</Text>
-      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={[styles.infoValue, { color: theme.text }]}>{value}</Text>
+      <Text style={[styles.infoLabel, { color: theme.subText }]}>{label}</Text>
     </LinearGradient>
   );
 }
 
-function ProjectTaskCard({ task, onPress }) {
+function ProjectTaskCard({ task, onPress, theme, isDarkMode }) {
   const statusColor =
     task.status === "Done"
-      ? "#16A34A"
+      ? GREEN
       : task.status === "In Progress"
-        ? "#7C3AED"
-        : "#F97316";
+        ? TEAL
+        : ORANGE;
 
   const priorityColor =
     task.priority === "High"
-      ? "#EF4444"
+      ? RED
       : task.priority === "Medium"
         ? "#F59E0B"
-        : "#22C55E";
+        : GREEN;
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
       <LinearGradient
-        colors={["#FFFFFF", "#F8FAFC", "#EEF2FF"]}
+        colors={
+          isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC", "#ECFEFF"]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.taskCard}
+        style={[
+          styles.taskCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
       >
         <View style={[styles.taskAccent, { backgroundColor: statusColor }]} />
 
@@ -59,8 +76,11 @@ function ProjectTaskCard({ task, onPress }) {
         </View>
 
         <View style={styles.taskContent}>
-          <Text style={styles.taskTitle}>{task.title}</Text>
-          <Text style={styles.taskSubtitle}>
+          <Text style={[styles.taskTitle, { color: theme.text }]}>
+            {task.title}
+          </Text>
+
+          <Text style={[styles.taskSubtitle, { color: theme.subText }]}>
             {task.assignee} • {task.deadline}
           </Text>
 
@@ -92,7 +112,7 @@ function ProjectTaskCard({ task, onPress }) {
         <MaterialCommunityIcons
           name="chevron-right"
           size={26}
-          color="#94A3B8"
+          color={theme.subText}
         />
       </LinearGradient>
     </TouchableOpacity>
@@ -100,6 +120,9 @@ function ProjectTaskCard({ task, onPress }) {
 }
 
 export default function ProjectDetailScreen({ route, navigation }) {
+  const { isDarkMode } = React.useContext(ThemeContext);
+  const theme = getScreenTheme(isDarkMode);
+
   const { projectId } = route.params || {};
   const project = projects.find((item) => item.id === projectId) || projects[0];
 
@@ -129,48 +152,59 @@ export default function ProjectDetailScreen({ route, navigation }) {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
       <LinearGradient
-        colors={["#FAF5FF", "#EEF2FF", "#F8FAFC"]}
+        colors={isDarkMode ? theme.tealCard : ["#ECFEFF", "#EFF6FF", "#F8FAFC"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerCard}
+        style={[
+          styles.headerCard,
+          {
+            borderColor: theme.cardBorder,
+            shadowColor: theme.shadow,
+          },
+        ]}
       >
         <View style={styles.circleOne} />
         <View style={styles.circleTwo} />
 
         <View style={styles.headerTop}>
-          <View style={styles.headerIcon}>
+          <View
+            style={[styles.headerIcon, { backgroundColor: theme.softWhite }]}
+          >
             <MaterialCommunityIcons
               name="briefcase-variant"
               size={42}
-              color="#7C3AED"
+              color={TEAL}
             />
           </View>
 
           <View style={styles.headerTextBox}>
-            <Text style={styles.title}>{project.name}</Text>
-            <Text style={styles.description}>{project.description}</Text>
+            <Text style={[styles.title, { color: theme.text }]}>
+              {project.name}
+            </Text>
+
+            <Text style={[styles.description, { color: theme.subText }]}>
+              {project.description}
+            </Text>
           </View>
         </View>
 
         <View style={styles.statusChip}>
-          <MaterialCommunityIcons
-            name="rocket-launch"
-            size={20}
-            color="#6D28D9"
-          />
+          <MaterialCommunityIcons name="rocket-launch" size={20} color={CYAN} />
           <Text style={styles.statusText}>{project.status}</Text>
         </View>
 
-        <Text style={styles.progressText}>Progress {project.progress}%</Text>
+        <Text style={[styles.progressText, { color: theme.text }]}>
+          Progress {project.progress}%
+        </Text>
 
         <View style={styles.progressTrack}>
           <LinearGradient
-            colors={["#A855F7", "#2563EB"]}
+            colors={[CYAN, BLUE]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${project.progress}%` }]}
@@ -183,16 +217,18 @@ export default function ProjectDetailScreen({ route, navigation }) {
           icon="account-group"
           label="Members"
           value={project.members}
-          color="#2563EB"
-          colors={["#EFF6FF", "#DBEAFE"]}
+          color={BLUE}
+          colors={isDarkMode ? theme.blueCard : ["#EFF6FF", "#DBEAFE"]}
+          theme={theme}
         />
 
         <InfoBox
           icon="clipboard-list"
           label="Tasks"
           value={projectTasks.length}
-          color="#7C3AED"
-          colors={["#FAF5FF", "#F3E8FF"]}
+          color={TEAL}
+          colors={isDarkMode ? theme.tealCard : ["#F0FDFA", "#CCFBF1"]}
+          theme={theme}
         />
       </View>
 
@@ -201,34 +237,45 @@ export default function ProjectDetailScreen({ route, navigation }) {
           icon="check-circle"
           label="Done"
           value={doneTasks}
-          color="#16A34A"
-          colors={["#F0FDF4", "#DCFCE7"]}
+          color={GREEN}
+          colors={isDarkMode ? theme.greenCard : ["#F0FDF4", "#DCFCE7"]}
+          theme={theme}
         />
 
         <InfoBox
           icon="timer-sand"
           label="Pending"
           value={pendingTasks}
-          color="#F97316"
-          colors={["#FFF7ED", "#FFEDD5"]}
+          color={ORANGE}
+          colors={isDarkMode ? theme.orangeCard : ["#FFF7ED", "#FEF3C7"]}
+          theme={theme}
         />
       </View>
 
       <LinearGradient
-        colors={["#FFFFFF", "#F8FAFC"]}
-        style={styles.deadlineCard}
+        colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
+        style={[
+          styles.deadlineCard,
+          {
+            borderColor: theme.cardBorder,
+          },
+        ]}
       >
         <View style={styles.deadlineIcon}>
           <MaterialCommunityIcons
             name="calendar-clock"
             size={28}
-            color="#0EA5A8"
+            color={TEAL}
           />
         </View>
 
         <View>
-          <Text style={styles.deadlineLabel}>Deadline</Text>
-          <Text style={styles.deadlineValue}>{project.deadline}</Text>
+          <Text style={[styles.deadlineLabel, { color: theme.subText }]}>
+            Deadline
+          </Text>
+          <Text style={[styles.deadlineValue, { color: theme.text }]}>
+            {project.deadline}
+          </Text>
         </View>
       </LinearGradient>
 
@@ -236,6 +283,8 @@ export default function ProjectDetailScreen({ route, navigation }) {
         <Button
           mode="contained"
           icon="pencil"
+          buttonColor={BLUE}
+          textColor="#FFFFFF"
           style={styles.actionButton}
           contentStyle={styles.buttonContent}
           onPress={handleEditProject}
@@ -244,8 +293,10 @@ export default function ProjectDetailScreen({ route, navigation }) {
         </Button>
 
         <Button
-          mode="contained-tonal"
+          mode="contained"
           icon="delete-outline"
+          buttonColor={isDarkMode ? "#450A0A" : "#FEE2E2"}
+          textColor={isDarkMode ? "#FCA5A5" : RED}
           style={styles.actionButton}
           contentStyle={styles.buttonContent}
           onPress={handleDeleteProject}
@@ -255,7 +306,9 @@ export default function ProjectDetailScreen({ route, navigation }) {
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Tasks in Project</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Tasks in Project
+        </Text>
 
         <TouchableOpacity onPress={() => navigation.navigate("CreateTask")}>
           <Text style={styles.addText}>+ Add</Text>
@@ -264,21 +317,25 @@ export default function ProjectDetailScreen({ route, navigation }) {
 
       {projectTasks.length === 0 ? (
         <LinearGradient
-          colors={["#FFFFFF", "#F8FAFC"]}
+          colors={isDarkMode ? theme.whiteCard : ["#FFFFFF", "#F8FAFC"]}
           style={styles.emptyCard}
         >
           <MaterialCommunityIcons
             name="clipboard-text-off-outline"
             size={36}
-            color="#94A3B8"
+            color={theme.subText}
           />
-          <Text style={styles.emptyText}>Chưa có task trong project này.</Text>
+          <Text style={[styles.emptyText, { color: theme.subText }]}>
+            Chưa có task trong project này.
+          </Text>
         </LinearGradient>
       ) : (
         projectTasks.map((task) => (
           <ProjectTaskCard
             key={task.id}
             task={task}
+            theme={theme}
+            isDarkMode={isDarkMode}
             onPress={() =>
               navigation.navigate("TaskDetail", { taskId: task.id })
             }
@@ -292,7 +349,6 @@ export default function ProjectDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
   },
   contentContainer: {
     padding: 18,
@@ -304,7 +360,10 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
   },
   circleOne: {
     position: "absolute",
@@ -313,7 +372,7 @@ const styles = StyleSheet.create({
     width: 170,
     height: 130,
     borderRadius: 90,
-    backgroundColor: "rgba(124,58,237,0.12)",
+    backgroundColor: "rgba(14,165,168,0.12)",
   },
   circleTwo: {
     position: "absolute",
@@ -332,7 +391,6 @@ const styles = StyleSheet.create({
     width: 82,
     height: 82,
     borderRadius: 41,
-    backgroundColor: "rgba(255,255,255,0.78)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -343,10 +401,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "900",
-    color: "#020617",
   },
   description: {
-    color: "#64748B",
     marginTop: 6,
     lineHeight: 21,
   },
@@ -355,20 +411,19 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(124,58,237,0.14)",
+    backgroundColor: "rgba(14,165,168,0.14)",
     paddingHorizontal: 15,
     paddingVertical: 9,
     borderRadius: 999,
   },
   statusText: {
     marginLeft: 8,
-    color: "#6D28D9",
+    color: TEAL,
     fontWeight: "900",
   },
   progressText: {
     marginTop: 18,
     fontWeight: "900",
-    color: "#020617",
   },
   progressTrack: {
     height: 11,
@@ -384,22 +439,20 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     marginBottom: 12,
+    gap: 10,
   },
   infoBox: {
     flex: 1,
     borderRadius: 22,
     padding: 16,
     alignItems: "center",
-    marginRight: 10,
   },
   infoValue: {
     fontSize: 26,
     fontWeight: "900",
-    color: "#0F172A",
     marginTop: 6,
   },
   infoLabel: {
-    color: "#64748B",
     fontWeight: "800",
   },
   deadlineCard: {
@@ -409,7 +462,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
   },
   deadlineIcon: {
     width: 54,
@@ -421,11 +473,9 @@ const styles = StyleSheet.create({
     marginRight: 14,
   },
   deadlineLabel: {
-    color: "#64748B",
     fontWeight: "700",
   },
   deadlineValue: {
-    color: "#0F172A",
     fontSize: 18,
     fontWeight: "900",
     marginTop: 3,
@@ -433,11 +483,11 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     marginBottom: 20,
+    gap: 10,
   },
   actionButton: {
     flex: 1,
     borderRadius: 16,
-    marginRight: 10,
   },
   buttonContent: {
     paddingVertical: 6,
@@ -451,10 +501,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: "900",
-    color: "#020617",
   },
   addText: {
-    color: "#2563EB",
+    color: BLUE,
     fontWeight: "900",
     fontSize: 16,
   },
@@ -466,8 +515,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.9)",
-    shadowColor: "#64748B",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.11,
     shadowRadius: 12,
@@ -494,10 +541,8 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 17,
     fontWeight: "900",
-    color: "#0F172A",
   },
   taskSubtitle: {
-    color: "#64748B",
     marginTop: 4,
   },
   chipRow: {
@@ -521,7 +566,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     marginTop: 8,
-    color: "#64748B",
     fontWeight: "700",
   },
 });
